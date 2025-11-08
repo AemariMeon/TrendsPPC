@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Trend Duel: Higher or Lower</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="description" content="Guess which recent social post has more reactions. Build your streak. Compete with yourself." />
+</head>
+<body>
+  <div class="bg-gradient"></div>
+
+  <header class="site-header">
+    <div class="brand">
+      <span class="logo-dot"></span>
+      <h1>Trend Duel</h1>
+    </div>
+    <div class="meta">
+      <div class="pill">Philippines • 2025</div>
+      <button id="infoBtn" class="icon-btn" aria-label="How it works">?</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="scoreboard glass">
+      <div class="score-item">
+        <span class="label">Current streak</span>
+        <span id="currentStreak" class="value">0</span>
+      </div>
+      <div class="score-item">
+        <span class="label">Best today</span>
+        <span id="bestStreak" class="value">0</span>
+      </div>
+      <div class="score-item">
+        <span class="label">Rounds played</span>
+        <span id="roundsPlayed" class="value">0</span>
+      </div>
+    </section>
+
+    <section class="game glass">
+      <div class="cards">
+        <article id="cardA" class="card" aria-live="polite">
+          <div class="source-badge" id="sourceA">TikTok</div>
+          <img id="imageA" src="" alt="Post A preview" />
+          <div class="card-body">
+            <h2 id="titleA">Loading…</h2>
+            <p id="metaA" class="meta-text">Reactions: hidden</p>
+          </div>
+        </article>
+
+        <div class="vs">VS</div>
+
+        <article id="cardB" class="card">
+          <div class="source-badge" id="sourceB">Instagram</div>
+          <img id="imageB" src="" alt="Post B preview" />
+          <div class="card-body">
+            <h2 id="titleB">Loading…</h2>
+            <p id="metaB" class="meta-text">Reactions: hidden</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="controls">
+        <div class="prompt">Which post has more reactions?</div>
+        <div class="btn-grid">
+          <button id="guessHigher" class="cta">Post B is higher</button>
+          <button id="guessLower" class="cta ghost">Post B is lower</button>
+        </div>
+        <div id="feedback" class="feedback" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="session glass">
+      <h3>Today’s personal rankings</h3>
+      <ol id="streakList" class="streak-list"></ol>
+      <div class="session-actions">
+        <button id="newGame" class="cta small">New game</button>
+        <button id="resetSession" class="cta small danger">Reset today</button>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="infoDialog">
+    <form method="dialog">
+      <h3>How it works</h3>
+      <ul class="howto">
+        <li><strong>Guess:</strong> Choose if Post B has higher or lower reactions than Post A.</li>
+        <li><strong>Streak:</strong> +1 for each correct guess. Wrong ends the streak.</li>
+        <li><strong>Ranking:</strong> Your streaks (this session) are saved and sorted from longest to shortest.</li>
+        <li><strong>Freshness:</strong> Swap in current PH posts in <code>script.js</code> → <code>DATASET</code>.</li>
+      </ul>
+      <button class="cta small">Got it</button>
+    </form>
+  </dialog>
+
+  <footer class="site-footer">
+    <span>Made for GitHub Pages & localhost • Images embedded from the internet</span>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
