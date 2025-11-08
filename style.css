@@ -20,7 +20,7 @@ body {
 }
 
 h1 {
-    color: #e51d4d; /* A color inspired by TikTok's logo */
+    color: #e51d4d; /* TikTok inspired color */
     margin-bottom: 5px;
 }
 
@@ -51,11 +51,11 @@ h1 {
 }
 
 #card-a {
-    border-color: #5cb85c; /* Green for the known value */
+    border-color: #5cb85c;
 }
 
 #card-b {
-    border-color: #f0ad4e; /* Orange for the value to be guessed */
+    border-color: #f0ad4e;
 }
 
 .metric-box {
@@ -158,7 +158,7 @@ h1 {
 }
 
 #start-alias-form input[type="text"], 
-#alias-form input[type="text"] {
+.modal-content input[type="text"] {
     padding: 10px;
     width: 100%;
     box-sizing: border-box;
@@ -168,7 +168,6 @@ h1 {
 }
 
 #start-alias-form button[type="submit"], 
-#alias-form button[type="submit"],
 .modal-content button {
     background-color: #e51d4d;
     color: white;
@@ -180,7 +179,6 @@ h1 {
 }
 
 #start-alias-form button[type="submit"]:hover, 
-#alias-form button[type="submit"]:hover,
 .modal-content button:hover {
     background-color: #a31538;
 }
