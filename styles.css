@@ -1,0 +1,200 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    text-align: center;
+}
+
+.game-container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 800px;
+}
+
+h1 {
+    color: #e51d4d; /* A color inspired by TikTok's logo */
+    margin-bottom: 5px;
+}
+
+#round-info {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #666;
+}
+
+#game-board {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+}
+
+.card {
+    background-color: #f8f8f8;
+    border: 3px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    width: 45%;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#card-a {
+    border-color: #5cb85c; /* Green for the known value */
+}
+
+#card-b {
+    border-color: #f0ad4e; /* Orange for the value to be guessed */
+}
+
+.metric-box {
+    margin-top: 15px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px dashed #ddd;
+}
+
+.metric-value {
+    font-size: 2.5em;
+    font-weight: 900;
+    color: #e51d4d;
+    margin: 5px 0;
+}
+
+.metric-label {
+    font-size: 0.8em;
+    color: #666;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.vs-label {
+    font-weight: bold;
+    color: #999;
+    font-style: italic;
+}
+
+.guess-btn {
+    background-color: #e51d4d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px 0;
+    font-size: 1.2em;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.guess-btn:hover:not(:disabled) {
+    background-color: #a31538;
+}
+
+.guess-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#message {
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.message.correct {
+    background-color: #dff0d8;
+    color: #3c763d;
+}
+
+.message.incorrect {
+    background-color: #f2dede;
+    color: #a94442;
+}
+
+.hidden {
+    display: none;
+}
+
+/* --- Modal Styles --- */
+.modal {
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+#final-score {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+#start-alias-form input[type="text"], 
+#alias-form input[type="text"] {
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 10px 0 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#start-alias-form button[type="submit"], 
+#alias-form button[type="submit"],
+.modal-content button {
+    background-color: #e51d4d;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#start-alias-form button[type="submit"]:hover, 
+#alias-form button[type="submit"]:hover,
+.modal-content button:hover {
+    background-color: #a31538;
+}
+
+#leaderboard-list-start,
+#leaderboard-list {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    margin-top: 15px;
+}
+
+#leaderboard-list-start li,
+#leaderboard-list li {
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+}
