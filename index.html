@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PH TikTok Higher or Lower</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="start-modal" class="modal">
+        <div class="modal-content">
+            <h2>Welcome to PH TikTok Higher or Lower!</h2>
+            <p>Guess which creator has **more** followers to build your streak over 10 rounds.</p>
+            <form id="start-alias-form">
+                <label for="start-alias-input">Enter your alias to begin:</label>
+                <input type="text" id="start-alias-input" maxlength="15" required>
+                <button type="submit">Start Game</button>
+            </form>
+            <h3>Top Scores</h3>
+            <ul id="leaderboard-list-start">
+                </ul>
+        </div>
+    </div>
+    <div class="game-container hidden" id="main-game">
+        <h1>🇵🇭 TikTok Higher or Lower ⬆️⬇️</h1>
+        <p id="round-info">Round 1/10 | Current Streak: 0</p>
+        <div id="game-board">
+            
+            <div class="card" id="card-a">
+                <p>Contender 1: <span id="name-a">Loading...</span></p>
+                <div class="metric-box">
+                    <p class="metric-value" id="value-a">??</p>
+                    <p class="metric-label">Followers (in Millions)</p>
+                </div>
+            </div>
+
+            <div class="vs-label">
+                <p>...has more or fewer followers than...</p>
+            </div>
+
+            <div class="card" id="card-b">
+                <p>Contender 2: <span id="name-b">Loading...</span></p>
+                <button class="guess-btn" onclick="makeGuess('higher')">HIGHER ⬆️</button>
+                <button class="guess-btn" onclick="makeGuess('lower')">LOWER ⬇️</button>
+                <div class="metric-box hidden" id="value-b-container">
+                    <p class="metric-value" id="value-b">??</p>
+                    <p class="metric-label">Followers (in Millions)</p>
+                </div>
+            </div>
+        </div>
+
+        <p id="message" class="hidden">Make your guess!</p>
+    </div>
+
+    <div id="leaderboard-modal" class="modal hidden">
+        <div class="modal-content">
+            <h2>Game Over!</h2>
+            <p id="final-score"></p>
+            <form id="alias-form" style="display: none;">
+                </form>
+            <button onclick="window.location.reload()">Play Again</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
