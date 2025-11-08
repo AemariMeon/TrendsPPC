@@ -1,198 +1,212 @@
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f4f7f6;
-    color: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    text-align: center;
+// --- Data Set (Curated from NoxInfluencer Top PH TikTok Creators) ---
+const TIKTOK_DATA = [
+    { name: "Niana Guerrero", followers: 46.1 },
+    { name: "Marie Twins🐵👭🏼", followers: 23.1 },
+    { name: "Yanyan De Jesus", followers: 23.1 },
+    { name: "ROSMAR", followers: 22.4 },
+    { name: "Ivana Alawi", followers: 22.2 },
+    { name: "Andrea Brillantes", followers: 21.4 },
+    { name: "Grae Cabase ᵗᵈ", followers: 20.2 },
+    { name: "MONA", followers: 18.9 },
+    { name: "Vladimir Grand", followers: 18.3 },
+    { name: "Hazel Grace", followers: 17.8 },
+    { name: "Zeinab Harake Parks", followers: 17.5 },
+    { name: "mona alawi", followers: 16.4 },
+    { name: "Sanya Lopez", followers: 16.3 },
+    { name: "Xspencer", followers: 16.1 },
+    { name: "Mobile Legends Philippines", followers: 16.0 },
+    { name: "Dasuri Choi", followers: 15.7 },
+    { name: "Prince Adrian Dagdag", followers: 15.7 },
+    { name: "Toni Fowler", followers: 15.6 },
+    { name: "Roce Ordoñez", followers: 15.3 },
+    { name: "Queenay👸🏻", followers: 15.3 },
+    { name: "siliqueen🌶️👸🏻", followers: 15.2 },
+    { name: "Angela Mae Evangelista", followers: 15.0 },
+    { name: "Christian Mae 💋", followers: 14.9 },
+    { name: "Whamoscruz", followers: 14.9 },
+    { name: "🍒Cherry Keem🍒", followers: 14.4 },
+    { name: "The Gold Squad", followers: 14.0 }, 
+    { name: "Boss Keng", followers: 13.9 },
+    { name: "Janio", followers: 13.4 },
+    { name: "Jugs and Kim", followers: 13.2 },
+    { name: "DJ Loonyo", followers: 13.0 },
+];
+
+// --- Game Variables ---
+let currentRound = 1;
+const MAX_ROUNDS = 10;
+let currentStreak = 0;
+let cardA = null;
+let cardB = null;
+let playerAlias = ''; 
+
+// --- DOM Elements ---
+const mainGameEl = document.getElementById('main-game');
+const startModalEl = document.getElementById('start-modal');
+const startAliasFormEl = document.getElementById('start-alias-form');
+const leaderboardListStartEl = document.getElementById('leaderboard-list-start');
+
+const roundInfoEl = document.getElementById('round-info');
+const nameAEl = document.getElementById('name-a');
+const valueAEl = document.getElementById('value-a');
+const nameBEl = document.getElementById('name-b');
+const valueBContainerEl = document.getElementById('value-b-container');
+const valueBEl = document.getElementById('value-b');
+const messageEl = document.getElementById('message');
+const modalEl = document.getElementById('leaderboard-modal');
+const finalScoreEl = document.getElementById('final-score');
+
+// --- Leaderboard & Persistence Functions ---
+
+function getLeaderboard() {
+    const scores = JSON.parse(localStorage.getItem('higherLowerLeaderboard')) || [];
+    // Sort descending by score and get top 10
+    return scores.sort((a, b) => b.score - a.score).slice(0, 10);
 }
 
-.game-container {
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    width: 90%;
-    max-width: 800px;
+function saveScore(alias, score) {
+    const scores = JSON.parse(localStorage.getItem('higherLowerLeaderboard')) || [];
+    // Push score only if a valid alias was entered
+    if (alias) { 
+        scores.push({ alias, score, date: new Date().toLocaleDateString() });
+        localStorage.setItem('higherLowerLeaderboard', JSON.stringify(scores));
+    }
 }
 
-h1 {
-    color: #e51d4d; /* TikTok inspired color */
-    margin-bottom: 5px;
+function renderLeaderboard(listElement) {
+    const topScores = getLeaderboard();
+    listElement.innerHTML = topScores.map((entry, index) => 
+        `<li>${index + 1}. **${entry.alias}** - ${entry.score} rounds (${entry.date})</li>`
+    ).join('');
 }
 
-#round-info {
-    font-size: 1.1em;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #666;
+// --- Game Initialization ---
+
+function initGame() {
+    // 1. Render the leaderboard on the start screen
+    renderLeaderboard(leaderboardListStartEl);
+    
+    // 2. Set up listener for alias submission to hide modal and start game
+    startAliasFormEl.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const aliasInput = document.getElementById('start-alias-input');
+        playerAlias = aliasInput.value.trim();
+        
+        if (playerAlias) {
+            startModalEl.classList.add('hidden'); // Hide the start modal
+            mainGameEl.classList.remove('hidden'); // Show the main game area
+            startGame(); // Begin the game session
+        }
+    });
 }
 
-#game-board {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    gap: 20px;
+
+// --- Core Game Functions ---
+
+// Get a random, unique card from the data set
+function getRandomCard(excludeCard = null) {
+    let newCard;
+    do {
+        newCard = TIKTOK_DATA[Math.floor(Math.random() * TIKTOK_DATA.length)];
+    } while (excludeCard && newCard.name === excludeCard.name);
+    return newCard;
 }
 
-.card {
-    background-color: #f8f8f8;
-    border: 3px solid #ccc;
-    border-radius: 8px;
-    padding: 20px;
-    width: 45%;
-    min-height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+// Set up the cards for the new round
+function startGame() {
+    currentRound = 1;
+    currentStreak = 0;
+    // Initialize first two cards
+    cardA = getRandomCard();
+    cardB = getRandomCard(cardA);
+
+    // Ensure they are not the same creator
+    while (cardA.name === cardB.name) {
+        cardB = getRandomCard(cardA);
+    }
+
+    updateDisplay();
 }
 
-#card-a {
-    border-color: #5cb85c;
+function updateDisplay(showValueB = false) {
+    // Update the round info, including the player alias
+    roundInfoEl.textContent = `Round ${currentRound}/${MAX_ROUNDS} | Current Streak: ${currentStreak} | Player: ${playerAlias}`;
+
+    // Update Card A
+    nameAEl.textContent = cardA.name;
+    valueAEl.textContent = `${cardA.followers.toFixed(1)}M`;
+    
+    // Update Card B
+    nameBEl.textContent = cardB.name;
+    valueBEl.textContent = `${cardB.followers.toFixed(1)}M`;
+    
+    // Toggle Card B visibility
+    valueBContainerEl.classList.toggle('hidden', !showValueB);
+    
+    // Re-enable/disable guess buttons
+    document.querySelectorAll('.guess-btn').forEach(btn => btn.disabled = showValueB);
 }
 
-#card-b {
-    border-color: #f0ad4e;
+// Main game logic
+window.makeGuess = function(guess) {
+    const isHigher = cardB.followers > cardA.followers;
+    const isLower = cardB.followers < cardA.followers;
+    let correct = false;
+
+    // Correct if the guess matches the reality, or if it's a tie
+    if (cardB.followers === cardA.followers) {
+        correct = true;
+    } else if ((guess === 'higher' && isHigher) || (guess === 'lower' && isLower)) {
+        correct = true;
+    }
+
+    // Show the actual value of Card B
+    updateDisplay(true);
+
+    if (correct) {
+        currentStreak++;
+        messageEl.textContent = `Correct! ${cardB.name} has ${cardB.followers.toFixed(1)}M followers.`;
+        messageEl.className = 'message correct';
+
+        if (currentRound < MAX_ROUNDS) {
+            currentRound++;
+            // Move Card B to Card A, and get a new Card B after a delay
+            setTimeout(() => {
+                cardA = cardB;
+                cardB = getRandomCard(cardA);
+                // Ensure the next Card B is not the same as Card A
+                while (cardA.name === cardB.name) {
+                    cardB = getRandomCard(cardA);
+                }
+                updateDisplay(false); // Hide Card B's value for the next round
+                messageEl.className = 'hidden';
+            }, 2500); 
+        } else {
+            endGame(); // Game finishes after 10 correct rounds
+        }
+    } else {
+        messageEl.textContent = `Incorrect! ${cardB.name} has ${cardB.followers.toFixed(1)}M followers.`;
+        messageEl.className = 'message incorrect';
+        endGame();
+    }
 }
 
-.metric-box {
-    margin-top: 15px;
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 6px;
-    border: 1px dashed #ddd;
+// End the game and show the modal
+function endGame() {
+    
+    // Save the final score using the alias entered at the start
+    saveScore(playerAlias, currentStreak);
+    
+    messageEl.textContent += ` Game Over! Final Streak: ${currentStreak}`;
+    
+    // Update the final score display
+    finalScoreEl.innerHTML = `Congratulations, **${playerAlias}**! You achieved a final streak of **${currentStreak}**!`;
+    
+    // Show the Game Over modal
+    setTimeout(() => {
+        modalEl.classList.remove('hidden');
+    }, 2500);
 }
 
-.metric-value {
-    font-size: 2.5em;
-    font-weight: 900;
-    color: #e51d4d;
-    margin: 5px 0;
-}
-
-.metric-label {
-    font-size: 0.8em;
-    color: #666;
-    text-transform: uppercase;
-    font-weight: bold;
-}
-
-.vs-label {
-    font-weight: bold;
-    color: #999;
-    font-style: italic;
-}
-
-.guess-btn {
-    background-color: #e51d4d;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 5px 0;
-    font-size: 1.2em;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-.guess-btn:hover:not(:disabled) {
-    background-color: #a31538;
-}
-
-.guess-btn:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-#message {
-    margin-top: 20px;
-    padding: 10px;
-    border-radius: 5px;
-    font-weight: bold;
-}
-
-.message.correct {
-    background-color: #dff0d8;
-    color: #3c763d;
-}
-
-.message.incorrect {
-    background-color: #f2dede;
-    color: #a94442;
-}
-
-.hidden {
-    display: none;
-}
-
-/* --- Modal Styles --- */
-.modal {
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: #ffffff;
-    padding: 40px;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 450px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-}
-
-#final-score {
-    font-size: 1.2em;
-    margin-bottom: 20px;
-}
-
-#start-alias-form input[type="text"], 
-.modal-content input[type="text"] {
-    padding: 10px;
-    width: 100%;
-    box-sizing: border-box;
-    margin: 10px 0 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-#start-alias-form button[type="submit"], 
-.modal-content button {
-    background-color: #e51d4d;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#start-alias-form button[type="submit"]:hover, 
-.modal-content button:hover {
-    background-color: #a31538;
-}
-
-#leaderboard-list-start,
-#leaderboard-list {
-    list-style: none;
-    padding: 0;
-    text-align: left;
-    margin-top: 15px;
-}
-
-#leaderboard-list-start li,
-#leaderboard-list li {
-    padding: 8px 0;
-    border-bottom: 1px dashed #eee;
-}
+// Start the initialization process when the script loads
+document.addEventListener('DOMContentLoaded', initGame);
